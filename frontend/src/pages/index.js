@@ -1,0 +1,7 @@
+export { default as Contact } from './Contact'
+export { default as Dishes } from './Dishes'
+export { default as Home } from './Home'
+export { default as Ingredients } from './Ingredients'
+export { default as MenuBuilder } from './MenuBuilder'
+export { default as NotFound } from './NotFound'
+export { default as Recipes } from './Recipes'

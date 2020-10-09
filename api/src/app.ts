@@ -2,6 +2,7 @@ import express, { Response, Request } from "express";
 import pino from "pino";
 import pinoHttp from "pino-http";
 import path from "path";
+import cors from "cors";
 import createError from "http-errors";
 import "reflect-metadata";
 
@@ -22,6 +23,7 @@ app.log = logger;
 
 app.use(pinoHttp({ logger }));
 app.use(express.json());
+app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 

@@ -11,8 +11,8 @@
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "build": "tsc",
     "start": "ts-node-dev ./src/index.ts",
-    "test": "jest --watchAll",
-    "test:ci": "jest --ci",
+    "test": "jest --watchAll --runInBand",
+    "test:ci": "jest --ci --runInBand",
     "test:coverage": "env-cmd -f ./.env.test && jest --coverage"
   },
   "author": "",

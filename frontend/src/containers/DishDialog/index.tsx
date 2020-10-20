@@ -63,6 +63,11 @@ const DishDialog = ({ config, close, ...other }: DishDialogProps) => {
         setDishValues({ ...dishValues, [e.target.name]: e.target.value })
     }
 
+    const handleCancel = () => {
+        setDishValues({name: ''})
+        close()
+    }
+
     return (
         <Dialog
             disableBackdropClick
@@ -99,7 +104,7 @@ const DishDialog = ({ config, close, ...other }: DishDialogProps) => {
             </DialogContent>
             <DialogActions>
                 <Button
-                    onClick={(_) => close()}
+                    onClick={handleCancel}
                     variant="contained"
                     disabled={loading}
                 >

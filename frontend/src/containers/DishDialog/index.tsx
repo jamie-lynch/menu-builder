@@ -9,16 +9,39 @@ import {
     CircularProgress,
 } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
+import { Dish } from 'types/dish'
 
-export const DishDialogModes = {
-    CREATE: 'create',
-    EDIT: 'edit',
+export enum DishDialogModes {
+    CREATE = 'create',
+    EDIT = 'edit',
 }
 
-const DishDialog = ({ open, close, mode, dish, handleOkay, ...other }) => {
+export type DishDialogConfig = {
+    open: boolean
+    mode: DishDialogModes
+    handleOkay: (dishValues: Dish) => any
+    dish?: Dish
+}
+
+type DishDialogProps = {
+    config: DishDialogConfig
+    close: (cancel?: boolean) => void
+}
+
+const DishDialog = ({ config, close, ...other }: DishDialogProps) => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
     const [dishValues, setDishValues] = useState({ name: '' })
+
+    useEffect(() => {
+        if (config.dish) {            
+            setDishValues(config.dish )
+        }
+    }, [config.dish])
+
+    if (!config.open) return null
+
+    const { open, handleOkay, mode } = config
 
     const onOkay = async () => {
         setLoading(true)
@@ -36,15 +59,9 @@ const DishDialog = ({ open, close, mode, dish, handleOkay, ...other }) => {
         close(false)
     }
 
-    const handleChange = (e) => {
+    const handleChange = (e: any) => {
         setDishValues({ ...dishValues, [e.target.name]: e.target.value })
     }
-
-    useEffect(() => {
-        setDishValues({ ...dish })
-    }, [dish])
-
-    if (!open) return null
 
     return (
         <Dialog
@@ -81,7 +98,11 @@ const DishDialog = ({ open, close, mode, dish, handleOkay, ...other }) => {
                 </div>
             </DialogContent>
             <DialogActions>
-                <Button onClick={close} variant="contained" disabled={loading}>
+                <Button
+                    onClick={(_) => close()}
+                    variant="contained"
+                    disabled={loading}
+                >
                     Cancel
                 </Button>
                 <Button

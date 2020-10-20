@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core'
 import GitHubIcon from '@material-ui/icons/GitHub'
 import GitHubButton from 'react-github-btn'
-import contactUs from '../../svg/undraw_contact_us_blue.svg'
+import contactUs from 'svg/undraw_contact_us_blue.svg'
 import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme) => ({
@@ -56,7 +56,7 @@ const Contact = () => {
                             href="https://github.com/jamie-lynch/menu-builder"
                             data-icon="octicon-star"
                             data-size="large"
-                            data-show-count="true"
+                            data-show-count={true}
                             aria-label="Star jamie-lynch/menu-builder on GitHub"
                         >
                             Star

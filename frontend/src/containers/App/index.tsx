@@ -22,6 +22,8 @@ import {
     NotFound,
 } from 'pages'
 import { Confirm } from 'containers'
+import { RootState } from 'stores/reducers'
+import { Dispatch } from 'redux'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -44,7 +46,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-const App = ({ open, openSidebar, closeSidebar }) => {
+type AppProps = {
+    open: boolean
+    openSidebar: () => void
+    closeSidebar: () => void
+}
+
+const App = ({ open, openSidebar, closeSidebar }: AppProps) => {
     const classes = useStyles()
 
     const muiTheme = createMuiTheme(theme)
@@ -88,9 +96,11 @@ const App = ({ open, openSidebar, closeSidebar }) => {
     )
 }
 
-const mapStateToProps = ({ sidebar }) => ({ open: sidebar.sidebarOpen })
+const mapStateToProps = ({ sidebar }: RootState) => ({
+    open: sidebar.sidebarOpen,
+})
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
     openSidebar: () => dispatch(openSidebar()),
     closeSidebar: () => dispatch(closeSidebar()),
 })

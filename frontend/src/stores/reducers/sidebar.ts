@@ -1,6 +1,10 @@
 import * as types from '../types'
 
-const sidebar = (state = { sidebarOpen: true }, action) => {
+const initialState: types.SideBarState = {
+    sidebarOpen: true,
+}
+
+const sidebar = (state = initialState, action: types.SidebBarActionTypes) => {
     switch (action.type) {
         case types.SIDEBAR_OPEN:
             return {

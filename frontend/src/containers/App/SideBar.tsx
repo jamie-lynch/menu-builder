@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core'
 import { DRAWER_WIDTH } from 'config/constants'
 import clsx from 'classnames'
-import config from 'config/sidebar.json'
+import config, { SideBarItemType } from 'config/sidebar'
 import { Link } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
@@ -50,7 +50,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-const SideBar = ({ open, handleDrawerClose }) => {
+type SideBarProps = { open: boolean }
+
+const SideBar = ({ open }: SideBarProps) => {
     const classes = useStyles()
 
     return (
@@ -71,7 +73,7 @@ const SideBar = ({ open, handleDrawerClose }) => {
             <List>
                 {config.map((item, index) => {
                     switch (item.type) {
-                        case 'divider':
+                        case SideBarItemType.Divider:
                             return (
                                 <div
                                     className="px-4 py-2"
@@ -80,7 +82,7 @@ const SideBar = ({ open, handleDrawerClose }) => {
                                     <Divider />
                                 </div>
                             )
-                        case 'link':
+                        case SideBarItemType.Link:
                         default:
                             return (
                                 <Link to={item.route} key={item.text}>

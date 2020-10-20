@@ -12,7 +12,7 @@ const NotFound = () => (
         <Typography variant="h6" className="text-center pt-8">
             Whoops...
         </Typography>
-        <Typography variant="subtitle" className="text-center">
+        <Typography variant="subtitle1" className="text-center">
             Looks like there's nothing here!
         </Typography>
     </div>

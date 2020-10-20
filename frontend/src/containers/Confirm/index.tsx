@@ -12,6 +12,8 @@ import {
 } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import { makeStyles } from '@material-ui/core/styles'
+import { RootState } from 'stores/reducers'
+import { Dispatch } from 'redux'
 
 // TODO: Improve the way this is done
 const useStyles = makeStyles({
@@ -20,14 +22,21 @@ const useStyles = makeStyles({
     },
 })
 
+type ConfirmProps = {
+    open: boolean
+    message?: string
+    handleCancel: () => void
+    handleOkay: () => void
+    postSuccess: () => void
+}
+
 const Confirm = ({
     open,
     message,
     handleCancel,
     handleOkay,
-    postSuccess,
-    ...other
-}) => {
+    postSuccess
+}: ConfirmProps) => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
 
@@ -62,7 +71,6 @@ const Confirm = ({
             disableBackdropClick
             disableEscapeKeyDown
             open={open}
-            {...other}
         >
             <DialogTitle>Confirm</DialogTitle>
             <DialogContent dividers>
@@ -104,10 +112,13 @@ const Confirm = ({
     )
 }
 
-const mapStateToProps = ({ confirm }) => confirm
+const mapStateToProps = ({ confirm }: RootState) => confirm
 
-const mapDispatchToProps = (dispatch) => ({
-    handleCancel: () => dispatch(setConfirmConfig({ open: false })),
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    handleCancel: () =>
+        dispatch(
+            setConfirmConfig({ open: false, handleOkay: () => {}, postSuccess: () => {} })
+        ),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Confirm)

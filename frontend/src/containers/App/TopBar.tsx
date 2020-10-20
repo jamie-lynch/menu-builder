@@ -2,7 +2,6 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Toolbar, Typography, AppBar, IconButton } from '@material-ui/core'
 import GitHubIcon from '@material-ui/icons/GitHub'
-import clsx from 'classnames'
 import MenuIcon from '@material-ui/icons/Menu'
 import CloseIcon from '@material-ui/icons/ChevronLeft'
 
@@ -18,15 +17,16 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-const TopBar = ({ open, handleDrawerOpen, handleDrawerClose }) => {
+type TopBarProps = {
+    open: boolean
+    handleDrawerOpen: () => void
+    handleDrawerClose: () => void
+}
+
+const TopBar = ({ open, handleDrawerOpen, handleDrawerClose }: TopBarProps) => {
     const classes = useStyles()
     return (
-        <AppBar
-            position="fixed"
-            className={clsx(classes.appBar, {
-                [classes.appBarShift]: open,
-            })}
-        >
+        <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
                 <IconButton
                     color="inherit"

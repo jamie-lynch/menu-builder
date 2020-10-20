@@ -61,7 +61,7 @@ const Dishes = () => {
                                         for you
                                     </Typography>
                                 </div>
-                                <DishList className="flex-frow" />
+                                <DishList />
                             </div>
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={5}>

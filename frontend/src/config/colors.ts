@@ -11,5 +11,5 @@ const main = {
 
 export default {
     ...main,
-    light_blue_d: color(main.light_blue).darken(0.15),
+    light_blue_d: color(main.light_blue).darken(0.15).toString(),
 }

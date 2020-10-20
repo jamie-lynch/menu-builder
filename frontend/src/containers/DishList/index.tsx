@@ -10,20 +10,40 @@ import {
     IconButton,
     ListItemSecondaryAction,
 } from '@material-ui/core'
+import * as types from 'stores/types'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
 import AddIcon from '@material-ui/icons/Add'
 import axios from 'axios'
 import { API_DOMAIN } from 'config/constants'
-import { withSnackbar } from 'notistack'
+import { ProviderContext, withSnackbar } from 'notistack'
 import { setConfirmConfig } from 'stores/actions'
 import { connect } from 'react-redux'
-import DishDialog, { DishDialogModes } from 'containers/DishDialog'
+import DishDialog, {
+    DishDialogModes,
+    DishDialogConfig,
+} from 'containers/DishDialog'
+import { Dispatch } from 'redux'
+import { Dish } from 'types/dish'
 
-const DishList = ({ enqueueSnackbar, handleSetConfirmConfig }) => {
-    const [dishes, setDishes] = useState([])
+type DishListProps = ProviderContext & {
+    handleSetConfirmConfig: (config: types.ConfirmState) => any
+}
+
+const DishList = ({
+    enqueueSnackbar,
+    handleSetConfirmConfig,
+}: DishListProps) => {
+    const initialDishes: Dish[] = []
+    const [dishes, setDishes] = useState(initialDishes)
     const [loading, setLoading] = useState(false)
-    const [dishDialogConfig, setDishDialogConfig] = useState({ open: false })
+
+    const initialConfig: DishDialogConfig = {
+        open: false,
+        mode: DishDialogModes.CREATE,
+        handleOkay: () => {}
+    }
+    const [dishDialogConfig, setDishDialogConfig] = useState(initialConfig)
 
     const getDishes = async () => {
         setLoading(true)
@@ -33,7 +53,6 @@ const DishList = ({ enqueueSnackbar, handleSetConfirmConfig }) => {
         } catch (err) {
             enqueueSnackbar('Could not fetch dishes', {
                 variant: 'error',
-                hideIconVariant: true,
             })
             setDishes([])
         } finally {
@@ -41,15 +60,15 @@ const DishList = ({ enqueueSnackbar, handleSetConfirmConfig }) => {
         }
     }
 
-    const addDish = async (dish) => {
+    const addDish = async (dish: Dish) => {
         await axios.post(`${API_DOMAIN}/dish`, dish)
     }
 
-    const editDish = async (dish) => {
+    const editDish = async (dish: Dish) => {
         return axios.put(`${API_DOMAIN}/dish/${dish.id}`, dish)
     }
 
-    const deleteDish = async (dish) => {
+    const deleteDish = async (dish: Dish) => {
         return axios.delete(`${API_DOMAIN}/dish/${dish.id}`)
     }
 
@@ -61,7 +80,7 @@ const DishList = ({ enqueueSnackbar, handleSetConfirmConfig }) => {
         })
     }
 
-    const handleEdit = (dish) => {
+    const handleEdit = (dish: Dish) => {
         setDishDialogConfig({
             open: true,
             mode: DishDialogModes.EDIT,
@@ -73,6 +92,8 @@ const DishList = ({ enqueueSnackbar, handleSetConfirmConfig }) => {
     const closeDishDialog = (cancel = true) => {
         setDishDialogConfig({
             open: false,
+            mode: DishDialogModes.CREATE,
+            handleOkay: () => {}
         })
 
         if (!cancel) {
@@ -80,7 +101,7 @@ const DishList = ({ enqueueSnackbar, handleSetConfirmConfig }) => {
         }
     }
 
-    const handleDelete = (dish) => {
+    const handleDelete = (dish: Dish) => {
         handleSetConfirmConfig({
             open: true,
             message: `delete the dish ${dish.name}`,
@@ -157,13 +178,14 @@ const DishList = ({ enqueueSnackbar, handleSetConfirmConfig }) => {
                     </div>
                 </div>
             )}
-            <DishDialog {...dishDialogConfig} close={closeDishDialog} />
+            <DishDialog config={dishDialogConfig} close={closeDishDialog} />
         </div>
     )
 }
 
-const mapDispatchToProps = (dispatch) => ({
-    handleSetConfirmConfig: (config) => dispatch(setConfirmConfig(config)),
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    handleSetConfirmConfig: (config: types.ConfirmState) =>
+        dispatch(setConfirmConfig(config)),
 })
 
 export default connect(null, mapDispatchToProps)(withSnackbar(DishList))

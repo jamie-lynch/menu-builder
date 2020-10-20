@@ -7,6 +7,8 @@ import createError from "http-errors";
 import "reflect-metadata";
 
 import dishRouter from "./routes/dish";
+import ingredientRouter from "./routes/ingredient";
+
 import HttpException from "./exceptions/HttpException";
 import LoggerApp from "LoggerApp";
 import swaggerUi from "swagger-ui-express";
@@ -30,6 +32,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use("/dish", dishRouter);
+app.use("/ingredient", ingredientRouter);
 
 app.use((req, res, next) => {
   next(createError(404));

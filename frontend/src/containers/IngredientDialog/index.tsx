@@ -9,35 +9,48 @@ import {
     CircularProgress,
 } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
-import { Dish } from 'types/dish'
+import { Ingredient } from 'types/ingredient'
+import {
+    makeStyles
+} from '@material-ui/core/styles'
 
-export enum DishDialogModes {
+const useStyles = makeStyles({
+    input: {
+        marginBottom: "0.5rem"
+    }
+})
+
+export enum IngredientDialogModes {
     CREATE = 'create',
     EDIT = 'edit',
 }
 
-export type DishDialogConfig = {
+export type IngredientDialogConfig = {
     open: boolean
-    mode: DishDialogModes
-    handleOkay: (dishValues: Dish) => any
-    dish?: Dish
+    mode: IngredientDialogModes
+    handleOkay: (ingredientValues: Ingredient) => any
+    ingredient?: Ingredient
 }
 
-type DishDialogProps = {
-    config: DishDialogConfig
+type IngredientDialogProps = {
+    config: IngredientDialogConfig
     close: (cancel?: boolean) => void
 }
 
-const DishDialog = ({ config, close, ...other }: DishDialogProps) => {
+const IngredientDialog = ({ config, close, ...other }: IngredientDialogProps) => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
-    const [dishValues, setDishValues] = useState({ name: '' })
+    
+    const initialIngredientValues: Ingredient = { name: '', description: '' }
+    const [ingredientValues, setIngredientValues] = useState(initialIngredientValues)
+
+    const classes = useStyles()
 
     useEffect(() => {
-        if (config.dish) {            
-            setDishValues(config.dish )
+        if (config.ingredient) {            
+            setIngredientValues(config.ingredient)
         }
-    }, [config.dish])
+    }, [config.ingredient])
 
     if (!config.open) return null
 
@@ -46,7 +59,7 @@ const DishDialog = ({ config, close, ...other }: DishDialogProps) => {
     const onOkay = async () => {
         setLoading(true)
         try {
-            await handleOkay(dishValues)
+            await handleOkay(ingredientValues)
         } catch (err) {
             console.log()
             setError(err?.response?.data || err.message)
@@ -60,11 +73,11 @@ const DishDialog = ({ config, close, ...other }: DishDialogProps) => {
     }
 
     const handleChange = (e: any) => {
-        setDishValues({ ...dishValues, [e.target.name]: e.target.value })
+        setIngredientValues({ ...ingredientValues, [e.target.name]: e.target.value })
     }
 
     const handleCancel = () => {
-        setDishValues({name: ''})
+        setIngredientValues({name: ''})
         close()
     }
 
@@ -76,9 +89,9 @@ const DishDialog = ({ config, close, ...other }: DishDialogProps) => {
             {...other}
         >
             <DialogTitle>
-                {mode === DishDialogModes.CREATE
-                    ? 'Create a new dish'
-                    : 'Edit a dish'}
+                {mode === IngredientDialogModes.CREATE
+                    ? 'Create a new ingredient'
+                    : 'Edit a ingredient'}
             </DialogTitle>
             <DialogContent dividers>
                 <div>
@@ -87,14 +100,24 @@ const DishDialog = ({ config, close, ...other }: DishDialogProps) => {
                             <CircularProgress />
                         </div>
                     ) : (
+                        <div className="flex flex-col">
                         <TextField
                             name="name"
+                            className={classes.input}
                             required
                             label="Name"
                             variant="filled"
-                            value={dishValues.name}
+                            value={ingredientValues.name}
                             onChange={handleChange}
                         />
+                        <TextField
+                            name="description"
+                            label="Description"
+                            variant="filled"
+                            value={ingredientValues.description}
+                            onChange={handleChange}
+                        />
+                        </div>
                     )}
                     {!!error && (
                         <Alert severity="error" className="mt-4">
@@ -124,4 +147,4 @@ const DishDialog = ({ config, close, ...other }: DishDialogProps) => {
     )
 }
 
-export default DishDialog
+export default IngredientDialog

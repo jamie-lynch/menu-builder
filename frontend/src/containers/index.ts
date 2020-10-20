@@ -1,3 +1,6 @@
 export { default as App } from './App'
 export { default as DishList } from './DishList'
+export { default as DishDialog } from './DishDialog'
+export { default as IngredientList } from './IngredientList'
+export { default as IngredientDialog } from './IngredientDialog'
 export { default as Confirm } from './Confirm'

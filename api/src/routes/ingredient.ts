@@ -4,6 +4,7 @@ import { getRepository } from "typeorm";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { Ingredient } from "../entities/Ingredient";
 import express from "express";
+import { getOrderObject, getWhereObject } from "../utils/queryParser";
 
 const router = express.Router();
 
@@ -30,6 +31,16 @@ const router = express.Router();
  *         required: false
  *         type: number
  *         default: 15
+ *       - name: search
+ *         description: An object of keys and values to filter by
+ *         in: query
+ *         required: false
+ *         type: object
+ *       - name: order
+ *         description: An object of keys and orders to sort by
+ *         in: query
+ *         required: false
+ *         type: object
  *     responses:
  *       200:
  *         description: Returns a list of ingredients
@@ -46,8 +57,11 @@ router.get("/", (req: LoggerRequest, res: Response) => {
     ? parseInt(req.query.results as string, 10)
     : 15;
 
+  const order = getOrderObject(req.query.order as object, Ingredient.sortableKeys)
+  const where = getWhereObject(req.query.search as object, Ingredient.filterObject)
+
   repo
-    .find({ take: results, skip: page * results })
+    .find({ take: results, skip: page * results, order, where })
     .then((dishes) => res.json(dishes))
     .catch((err) => res.status(500).send(err.message));
 });

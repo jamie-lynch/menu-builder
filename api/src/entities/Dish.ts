@@ -1,3 +1,4 @@
+import { whereTypes } from "../utils/queryParser";
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 /**
@@ -17,6 +18,17 @@ import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
  */
 @Entity()
 export class Dish {
+
+  static sortableKeys: string[] = [
+    "id",
+    "name"
+  ]
+
+  static filterObject: {[key: string]: whereTypes} = {
+    id: whereTypes.EQUALS,
+    name: whereTypes.LIKE
+  }
+
   @PrimaryGeneratedColumn()
   id: number;
 

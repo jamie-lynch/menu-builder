@@ -53,6 +53,35 @@ describe("The dish router", () => {
           done();
         });
     });
+
+    test("returns the array sorted by the key as required", async (done) => {
+      await dish(2, [{ name: "b" }, {name: "a"}]);
+      request(app)
+        .get("/dish")
+        .query({order: {name: "ASC"}})
+        .expect(200)
+        .then((response) => {
+          expect(response.body.length).toBe(2)
+          expect(response.body[0].name).toBe("a");
+          expect(response.body[1].name).toBe("b");
+          done();
+        });
+    });
+
+    test("returns the array filtered by name", async (done) => {
+      await dish(4, [{ name: "test" }, {name: "not this one"}, {name: "a test"}, {name: "test a"}]);
+      request(app)
+        .get("/dish")
+        .query({search: {name: "test"}})
+        .expect(200)
+        .then((response) => {
+          expect(response.body.length).toBe(3)
+          expect(response.body[0].name).toBe("test");
+          expect(response.body[1].name).toBe("a test");
+          expect(response.body[2].name).toBe("test a");
+          done();
+        });
+    });
   });
 
   describe("The GET /dish/{id} route", () => {

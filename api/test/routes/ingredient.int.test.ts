@@ -44,7 +44,7 @@ describe("The ingredient router", () => {
         });
     });
 
-    test("returns an empty array if no ingredientes exist", (done) => {
+    test("returns an empty array if no ingredients exist", (done) => {
       request(app)
         .get("/ingredient")
         .expect(200)
@@ -53,13 +53,42 @@ describe("The ingredient router", () => {
           done();
         });
     });
+
+    test("returns the array sorted by the key as required", async (done) => {
+      await ingredient(2, [{ name: "b" }, {name: "a"}]);
+      request(app)
+        .get("/ingredient")
+        .query({order: {name: "ASC"}})
+        .expect(200)
+        .then((response) => {
+          expect(response.body.length).toBe(2)
+          expect(response.body[0].name).toBe("a");
+          expect(response.body[1].name).toBe("b");
+          done();
+        });
+    });
+
+    test("returns the array filtered by name", async (done) => {
+      await ingredient(4, [{ name: "test" }, {name: "not this one"}, {name: "a test"}, {name: "test a"}]);
+      request(app)
+        .get("/ingredient")
+        .query({search: {name: "test"}})
+        .expect(200)
+        .then((response) => {
+          expect(response.body.length).toBe(3)
+          expect(response.body[0].name).toBe("test");
+          expect(response.body[1].name).toBe("a test");
+          expect(response.body[2].name).toBe("test a");
+          done();
+        });
+    });
   });
 
   describe("The GET /ingredient/{id} route", () => {
     test("returns a single ingredient that matches the id", async (done) => {
-      const ingredientes = await ingredient(1, [{ name: "test" }]);
+      const ingredients = await ingredient(1, [{ name: "test" }]);
       request(app)
-        .get(`/ingredient/${ingredientes[0].id}`)
+        .get(`/ingredient/${ingredients[0].id}`)
         .expect(200)
         .then((response) => {
           expect(response.body.name).toBe("test");
